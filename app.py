@@ -1,0 +1,118 @@
+# import urllib2
+# -*- coding: utf-8 -*-
+import json 
+from watson_developer_cloud import AlchemyLanguageV1
+import pyquizlet
+
+# alchemyAPI setup
+alchemy_language = AlchemyLanguageV1(api_key='75f63d26e24b47888a21ad32683e1af315f08600')
+#quizlet setup
+client_id = 'y82YhQBend'
+
+
+pythonObj = alchemy_language.concepts(
+    text='Determinants of Elasticity Perfecdy elastic and perfeedy inelastic demand curves are usually reserved for the hypothetical example, but they illustrate that E& differs across consumer goods. Your intuition is that consumers respond to a price change in different ways. A 10 percent increase in the price of a car might have a drastically different consumer response from what we observe from a 10 percent increase in the price of a college education, a package of mechanical pencils, or a hotel stay in Fort Lauderdale. Lets look at some general explanations for why elasticity differs. 1.    Number of Good Substitutes If the price of good X increases, and many substitutes exist, the decrease in quantity demanded can be quite elastic. For this reason, we expect of orange juice to be high, since there are many substitutes available to drinkers of fruit juice. Corollary. Oftentimes you hear of a good that is a “necessity” or a “frivolity.” These adjectives are reiterating a relative lack of or a relative wealth of good substitutes. Example: The more narrowly the product is defined, the more elastic it becomes. If we narrow our focus from orange juice down to one brand of orange juice (e.g., Minute Maid), the number of substitutes grows and we predict that so too does the price elasticity of demand for Minute Maid brand orange juice. Likewise, the demand for blue Chevrolet SUVs is more elastic than the demand for Chevrolet SUVs, which, in turn, is more elastic than the demand for all SUVs. 2.    Proportion of Income If the price of a good increases, the consumer loses purchasing power. If that good takes up a large proportion of the consumer s income, he greatly feels the pinch of the income effect, and his responsiveness might be significant. If the price of toothpicks increased by 10 percent, the typical household probably would not feel the lost purchasing power and E& would be low. The opposite would be true if the price of food items increased by 10 percent. Example: A young full-time college student is purchasing her education by the credit-hour and supporting herself with a part-time job on the weekends and evenings. Since the student is living on a relatively small monthly income, if the price of a credit-hour increases, the response might be very elastic. The student might drop down to part-time status or drop out of college altogether so that she can save enough money to return next quarter. 3.    Time Consumers faced by a rising price are usually fairly resourceful in their ability to find a way of decreasing the quantity demanded of a good. ',
+    max_items = 20,
+    show_source_text=1)
+
+
+# pythonObj = json.loads(result.reads())
+# get a dictionary (http://stackoverflow.com/questions/9152431/iterating-over-list-of-dictionaries)
+# pythonObj = [{'text':x} for x in range(1, len(pythonObj))]
+# for text in enumerate(d['text'] for d in pythonObj): 
+#     print text
+result = json.dumps(pythonObj) # result has type <str>
+print type(result)
+jsonObj = json.loads(result)
+
+print type(jsonObj)
+conceptObj = jsonObj['concepts']
+# conceptObj = [{'text':x} for x in range(1, len(conceptObj))]
+
+# now we want to take the top keywords(concepts) and feed it into Quizlet
+
+# method signature
+# def request_token(self, code, redirect_uri, secret): 
+quizlet = pyquizlet.Quizlet(client_id)
+print type(quizlet)
+quizAuth = quizlet.generate_auth_url("read")
+print type(quizAuth[0])
+print "(request_string) = ", quizAuth[0]
+
+# TODO: curl this URL and parse the code to feed back
+code = raw_input('What is the auth code?')
+quizlet.request_token(code,'http://jlin.xyz', 'jV2DN45BB57yZwUFWAvwJU')
+print quizlet.access_token
+
+# printing results here
+x = raw_input('Dummy to establish connection?')
+
+for text in (d['text'] for d in conceptObj): 
+	print "beginning of ", text
+	text = text.replace (" ", "%20")
+	#  check why is this problematic 
+	flashcards = quizlet.search_sets(text, False)
+	print "<------ ", text, " ------>"
+
+# now we want to take the top keywords(concepts) and feed it into Quizlet
+
+# method signature
+# def request_token(self, code, redirect_uri, secret): 
+# quizlet = pyquizlet.Quizlet(client_id)
+# print type(quizlet)
+# quizAuth = quizlet.generate_auth_url("read")
+# print type(quizAuth[0])
+# print "(request_string) = ", quizAuth[0]
+
+# code = raw_input('What is the auth code?')
+# quizlet.request_token(code,'http://jlin.xyz', 'jV2DN45BB57yZwUFWAvwJU')
+# print quizlet.access_token
+
+# searches sets here
+
+# print(json.dumps(
+#   result,
+#   indent=2))
+
+
+#  Sample response
+# {
+#     "status": "OK",
+#     "usage": "By accessing AlchemyAPI or using information generated by AlchemyAPI, you are agreeing to be bound by the AlchemyAPI Terms of Use: http://www.alchemyapi.com/company/terms.html",
+#     "url": "http://www.ibm.com/watson/",
+#     "totalTransactions": "2",
+#     "language": "english",
+#     "concepts": [
+#         {
+#             "text": "Thomas J. Watson",
+#             "relevance": "0.926128",
+#             "knowledgeGraph": {
+#                 "typeHierarchy": "/people/thomas j. watson"
+#             },
+#             "dbpedia": "http://dbpedia.org/resource/Thomas_J._Watson",
+#             "freebase": "http://rdf.freebase.com/ns/m.07qkt",
+#             "yago": "http://yago-knowledge.org/resource/Thomas_J._Watson"
+#         },
+#         {
+#             "text": "Science",
+#             "relevance": "0.902652",
+#             "knowledgeGraph": {
+#                 "typeHierarchy": "/fields/subjects/science"
+#             },
+#             "dbpedia": "http://dbpedia.org/resource/Science",
+#             "freebase": "http://rdf.freebase.com/ns/m.06mq7",
+#             "opencyc": "http://sw.opencyc.org/concept/Mx4rwKQK2JwpEbGdrcN5Y29ycA"
+#         },
+#         ...
+#     ]
+# }
+
+# result.concepts
+
+
+
+# f = urllib.reuqest.urlopen('https://api.quizlet.com/2.0/sets/415?client_id=y82YhQBend&whitespace=1')
+# print(f.read(100).decode('utf-8'))
+# urllib2.urlopen("https://api.quizlet.com/2.0/sets/415?client_id=y82YhQBend&whitespace=1").read()
+
+# TODO: we want to take text from OCR -> print it 
