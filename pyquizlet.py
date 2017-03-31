@@ -6,7 +6,8 @@ import random
 import string
 import base64
 
-#author: Tobias Domhan
+#orig_author: Tobias Domhan
+#modified by: Jason Lin
 
 
 class Quizlet():
