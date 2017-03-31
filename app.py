@@ -15,9 +15,8 @@ pythonObj = alchemy_language.concepts(
     max_items = 20,
     show_source_text=1)
 
-
+# DEBUG print returned python object #
 # pythonObj = json.loads(result.reads())
-# get a dictionary (http://stackoverflow.com/questions/9152431/iterating-over-list-of-dictionaries)
 # pythonObj = [{'text':x} for x in range(1, len(pythonObj))]
 # for text in enumerate(d['text'] for d in pythonObj): 
 #     print text
@@ -30,9 +29,6 @@ conceptObj = jsonObj['concepts']
 # conceptObj = [{'text':x} for x in range(1, len(conceptObj))]
 
 # now we want to take the top keywords(concepts) and feed it into Quizlet
-
-# method signature
-# def request_token(self, code, redirect_uri, secret): 
 quizlet = pyquizlet.Quizlet(client_id)
 print type(quizlet)
 quizAuth = quizlet.generate_auth_url("read")
@@ -53,27 +49,6 @@ for text in (d['text'] for d in conceptObj):
 	#  check why is this problematic 
 	flashcards = quizlet.search_sets(text, False)
 	print "<------ ", text, " ------>"
-
-# now we want to take the top keywords(concepts) and feed it into Quizlet
-
-# method signature
-# def request_token(self, code, redirect_uri, secret): 
-# quizlet = pyquizlet.Quizlet(client_id)
-# print type(quizlet)
-# quizAuth = quizlet.generate_auth_url("read")
-# print type(quizAuth[0])
-# print "(request_string) = ", quizAuth[0]
-
-# code = raw_input('What is the auth code?')
-# quizlet.request_token(code,'http://jlin.xyz', 'jV2DN45BB57yZwUFWAvwJU')
-# print quizlet.access_token
-
-# searches sets here
-
-# print(json.dumps(
-#   result,
-#   indent=2))
-
 
 #  Sample response
 # {
